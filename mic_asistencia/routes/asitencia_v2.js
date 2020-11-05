@@ -6,10 +6,10 @@ const security = require('../controller/autcontroller');
 var producer = require('../services/kafkaproducer')
 
 router.get('/', (req, res) => {
-    res.send('welcome:  visit /listar/asistencias ')
+    res.send('welcome asictencia v2:  visit /listar/asistencias  + token')
 })
 
-router.get('/listar/asistencias', async(request, response) => {
+router.get('/listar/asistencias', security, async(request, response) => {
     try {
         var result = await modelos.Model.find().exec();
         response.json(result);
@@ -18,7 +18,7 @@ router.get('/listar/asistencias', async(request, response) => {
     }
 });
 
-router.get('/listar/asistencia/:id', async(request, response) => {
+router.get('/listar/asistencia/:id', security, async(request, response) => {
     try {
         var result = await modelos.Model.find({ id_alumno: request.params.id }).exec();
         response.json(result);
@@ -27,7 +27,7 @@ router.get('/listar/asistencia/:id', async(request, response) => {
     }
 });
 
-router.post("/registrar/asistencia", async(request, response) => {
+router.post("/registrar/asistencia", security, async(request, response) => {
     try {
         var item = new modelos.Model(request.body);
         var result = await item.save();
@@ -38,7 +38,7 @@ router.post("/registrar/asistencia", async(request, response) => {
     }
 });
 
-router.delete("/eliminar/asistencia/:id", async(request, response) => {
+router.delete("/eliminar/asistencia/:id", security, async(request, response) => {
     try {
         var result = await modelos.Model.deleteOne({ id_alumno: request.params.id }).exec();
         response.status(200).send(result.deletedCount == 1 ? { msg: "registro eliminado" } : { msg: "registro inexistente" });
@@ -47,7 +47,7 @@ router.delete("/eliminar/asistencia/:id", async(request, response) => {
     }
 });
 
-router.put("/actualizar/asistencia/:id", async(request, response) => {
+router.put("/actualizar/asistencia/:id", security, async(request, response) => {
     try {
         var result = await modelos.Model.updateOne({ id_alumno: request.params.id }, { $set: request.body }).exec();
         response.status(200).send(result.nModified == 1 ? { msg: "registro actualizado" } : { msg: "error de registro" });
@@ -56,7 +56,7 @@ router.put("/actualizar/asistencia/:id", async(request, response) => {
     }
 });
 
-router.put("/actualizar/asistencia/:id", async(request, response) => {
+router.put("/actualizar/asistencia/:id", security, async(request, response) => {
     try {
         var result = await modelos.Model.updateOne({ id_alumno: request.params.id }, { $set: { disponible: request.body.disponible } }).exec();
         response.status(200).send(
